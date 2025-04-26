@@ -1,64 +1,433 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iPad3</title>
 <style>
-/* The device with borders */
-.smartphone {
-  position: relative;
-  width: 360px;
-  height: 640px;
-  margin: auto;
-  border: 16px black solid;
-  border-top-width: 60px;
-  border-bottom-width: 60px;
-  border-radius: 36px;
-}
-
-/* The horizontal line on the top of the device */
-.smartphone:before {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 5px;
-  position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #333;
-  border-radius: 10px;
-}
-
-/* The circle on the bottom of the device */
-.smartphone:after {
-  content: '';
-  display: block;
-  width: 35px;
-  height: 35px;
-  position: absolute;
-  left: 50%;
-  bottom: -65px;
-  transform: translate(-50%, -50%);
-  background: #333;
-  border-radius: 50%;
-}
-
-/* The screen (or content) of the device */
-.smartphone .content {
-  width: 360px;
-  height: 640px;
-  background: white;
-}
+  body { font-family: sans-serif; margin: 0; background-color: #e0e0e0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  .ipad-container {
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 600px;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+  }
+  .status-bar {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+  .time {
+    font-size: 18px;
+    color: #333;
+  }
+  .battery {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 16px;
+    color: #333;
+  }
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 20px;
+    gap: 15px;
+    flex-grow: 1;
+    overflow: auto;
+  }
+  .app-icon {
+    background-color: #ddd;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  .app-icon img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 8px;
+  }
+  .app-icon span {
+    font-size: 14px;
+    color: #333;
+  }
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 10px;
+    position: relative;
+  }
+  .close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .close-button:hover,
+  .close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  #calculator-app, #appstore-app, #musicplayer-app, #notes-app, #photos-app, #settings-app, #safari-app, #mail-app {
+    text-align: center;
+  }
+  #calculator-display {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: right;
+    background-color: #eee;
+  }
+  .calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .calculator-buttons button {
+    padding: 15px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ddd;
+    cursor: pointer;
+  }
+  .calculator-buttons button.operator {
+    background-color: #f0ad4e;
+    color: white;
+  }
+  .calculator-buttons button.equal {
+    background-color: #5cb85c;
+    color: white;
+    grid-column: span 2;
+  }
+  #appstore-content {
+    padding: 20px;
+  }
+  #appstore-content p {
+    margin-bottom: 10px;
+  }
+  #musicplayer-content {
+    padding: 20px;
+  }
+  #musicplayer-content p {
+    margin-bottom: 10px;
+  }
+  #notes-content {
+    padding: 20px;
+  }
+  #photos-content {
+    padding: 20px;
+  }
+  #settings-content {
+    padding: 20px;
+  }
+  #safari-content {
+    padding: 20px;
+  }
+  #mail-content {
+    padding: 20px;
+  }
 </style>
 </head>
 <body>
-
-<div class="smartphone">
-  <div class="content">
-    <iframe src="iPhone.html" style="width:100%;border:none;height:100%" />
+  <div class="ipad-container">
+    <div class="status-bar">
+      <div class="time" id="current-time">12:02 PM</div>
+      <div class="battery">95%</div>
+    </div>
+    <div class="app-grid">
+      <div class="app-icon" onclick="openApp('calculator')">
+        <img src="Calculator.png" alt="Calculator">
+        <span>Calculator</span>
+      </div>
+      <div class="app-icon" onclick="openApp('appstore')">
+        <img src="App Store.png" alt="App Store">
+        <span>App Store</span>
+      </div>
+      <div class="app-icon" onclick="openApp('musicplayer')">
+        <img src="https://via.placeholder.com/50/DC3545/FFFFFF?Text=Music" alt="Music">
+        <span>Music</span>
+      </div>
+      <div class="app-icon" onclick="openApp('notes')">
+        <img src="Notes.png" alt="Notes">
+        <span>Notes</span>
+      </div>
+      <div class="app-icon" onclick="openApp('photos')">
+        <img src="Photos.png" alt="Photos">
+        <span>Photos</span>
+      </div>
+      <div class="app-icon" onclick="openApp('settings')">
+        <img src="Settings.png" alt="Settings">
+        <span>Settings</span>
+      </div>
+      <div class="app-icon" onclick="openApp('safari')">
+        <img src="Safari.png" alt="Safari">
+        <span>Safari</span>
+      </div>
+      <div class="app-icon" onclick="openApp('mail')">
+        <img src="https://via.placeholder.com/50/FF4500/FFFFFF?Text=Mail" alt="Mail">
+        <span>Mail</span>
+      </div>
+    </div>
   </div>
-</div>
 
+  <div id="calculator-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeApp('calculator')">&times;</span>
+      <div id="calculator-app">
+        <h2>Calculator</h2>
+        <input type="text" id="calculator-display" value="0" disabled>
+        <div class="calculator-buttons">
+          <button onclick="clearDisplay()">C</button>
+          <button onclick="deleteLast()">DEL</button>
+          <button onclick="appendOperator('/')" class="operator">/</button>
+          <button onclick="appendOperator('*')" class="operator">*</button>
+          <button onclick="appendNumber('7')">7</button>
+          <button onclick="appendNumber('8')">8</button>
+          <button onclick="appendNumber('9')">9</button>
+          <button onclick="appendOperator('-')" class="operator">-</button>
+          <button onclick="appendNumber('4')">4</button>
+          <button onclick="appendNumber('5')">5</button>
+          <button onclick="appendNumber('6')">6</button>
+          <button onclick="appendOperator('+')" class="operator">+</button>
+          <button onclick="appendNumber('1')">1</button>
+          <button onclick="appendNumber('2')">2</button>
+          <button onclick="appendNumber('3')">3</button>
+          <button onclick="appendNumber('0')">0</button>
+          <button onclick="appendDecimal()">.</button>
+          <button onclick="calculate()" class="equal">=</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="appstore-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeApp('appstore')">&times;</span>
+      <div id="appstore-app">
+        <h2>App Store</h2>
+        <div id="appstore-content">
+          <p>Welcome to the App Store!</p>
+          <p>Browse and download amazing apps.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="musicplayer-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeApp('musicplayer')">&times;</span>
+      <div id="musicplayer-app">
+        <h2>Music Player</h2>
+        <div id="musicplayer-content">
+          <p>Your music library awaits!</p>
+          <p>Play your favorite tunes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="notes-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeApp('notes')">&times;</span>
+      <div id="notes-app">
+        <h2>Notes</h2>
+        <div id="notes-content">
+          <p>Take notes, jot down ideas.</p>
+          <textarea style="width: 95%; height: 200px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="photos-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeApp('photos')">&times;</span>
+      <div id="photos-app">
+        <h2>Photos</h2>
+        <div id="photos-content">
+          <p>View your photo library here.</p>
+          <p>(Image gallery simulation)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeApp('settings')">&times;</span>
+      <div id="settings-app">
+        <h2>Settings</h2>
+        <div id="settings-content">
+          <p>Configure your iPad settings.</p>
+          <ul>
+            <li>Wi-Fi</li>
+            <li>Bluetooth</li>
+            <li>Display & Brightness</li>
+            <li>General</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="safari-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeApp('safari')">&times;</span>
+      <div id="safari-app">
+        <h2>Safari</h2>
+        <div id="safari-content">
+          <input type="text" style="width: 95%; padding: 10px; margin-bottom: 10px;" placeholder="Enter URL">
+          <p>Browse the web.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mail-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeApp('mail')">&times;</span>
+      <div id="mail-app">
+        <h2>Mail</h2>
+        <div id="mail-content">
+          <p>Check your inbox.</p>
+          <ul>
+            <li>Inbox</li>
+            <li>Sent</li>
+            <li>Drafts</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12; // Convert to 12-hour format
+      const timeString = `${hours}:${minutes} ${ampm}`;
+      document.getElementById('current-time').textContent = timeString;
+    }
+    setInterval(updateTime, 1000); // Update time every second
+    updateTime(); // Initial call to set the time immediately
+
+    function openApp(appName) {
+      document.getElementById(appName + '-modal').style.display = "block";
+    }
+
+    function closeApp(appName) {
+      document.getElementById(appName + '-modal').style.display = "none";
+      if (appName === 'calculator') {
+        document.getElementById('calculator-display').value = '0';
+        currentInput = '';
+        currentOperator = null;
+        previousValue = null;
+      }
+    }
+
+    // Calculator functionality
+    let currentInput = '';
+    let currentOperator = null;
+    let previousValue = null;
+
+    function appendNumber(number) {
+      currentInput += number;
+      document.getElementById('calculator-display').value = currentInput;
+    }
+
+    function appendOperator(operator) {
+      if (currentInput === '' && previousValue === null) return;
+      if (previousValue !== null) {
+        calculate();
+      }
+      previousValue = parseFloat(currentInput);
+      currentInput = '';
+      currentOperator = operator;
+    }
+
+    function appendDecimal() {
+      if (!currentInput.includes('.')) {
+        currentInput += '.';
+        document.getElementById('calculator-display').value = currentInput;
+      }
+    }
+
+    function clearDisplay() {
+      currentInput = '';
+      currentOperator = null;
+      previousValue = null;
+      document.getElementById('calculator-display').value = '0';
+    }
+
+    function deleteLast() {
+      currentInput = currentInput.slice(0, -1);
+      document.getElementById('calculator-display').value = currentInput || '0';
+    }
+
+    function calculate() {
+      if (currentOperator === null || previousValue === null) return;
+      let result;
+      const currentValue = parseFloat(currentInput);
+      switch (currentOperator) {
+        case '+':
+          result = previousValue + currentValue;
+          break;
+        case '-':
+          result = previousValue - currentValue;
+          break;
+        case '*':
+          result = previousValue * currentValue;
+          break;
+        case '/':
+          if (currentValue === 0) {
+            result = 'Error';
+          } else {
+            result = previousValue / currentValue;
+          }
+          break;
+        default:
+          return;
+      }
+      document.getElementById('calculator-display').value = result;
+      currentInput = String(result);
+      currentOperator = null;
+      previousValue = null;
+    }
+  </script>
 </body>
-</html>
-
+  </html>
